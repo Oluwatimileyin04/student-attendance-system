@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDENT ATTENDANCE SYSTEM | Taraba State University</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .university-name {
+            text-align: center;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .login-section, .attendance-section, .lecturer-section {
+            display: none;
+        }
+        
+        .active-section {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: var(--font-main);
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d5dbdb;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .present {
+            background-color: rgba(39, 174, 96, 0.1);
+        }
+        
+        .absent {
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+        
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 5px 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .nav-links a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .success {
+            background-color: rgba(39, 174, 96, 0.2);
+            color: var(--success);
+        }
+        
+        .error {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>STUDENT ATTENDANCE SYSTEM</h1>
+        <div class="university-name">Taraba State University - Faculty of Education</div>
+        
+        <!-- Student Login -->
+        <div id="studentLogin" class="login-section active-section">
+            <div class="form-group">
+                <label for="studentMatric">Matric Number</label>
+                <input type="text" id="studentMatric" placeholder="TSU/FED/CS/23/1001">
+            </div>
+            <button onclick="studentLogin()">Login</button>
+            <div class="nav-links">
+                <a href="#" onclick="showSection('lecturerLogin')">Lecturer Login</a>
+            </div>
+        </div>
+        
+        <!-- Lecturer Login -->
+        <div id="lecturerLogin" class="login-section">
+            <div class="form-group">
+                <label for="lecturerPassword">Password</label>
+                <input type="password" id="lecturerPassword" placeholder="Enter password (1-6)">
+            </div>
+            <button onclick="lecturerLogin()">Login</button>
+            <div class="nav-links">
+                <a href="#" onclick="showSection('studentLogin')">Student Login</a>
+            </div>
+        </div>
+        
+        <!-- Student Attendance -->
+        <div id="studentAttendance" class="attendance-section">
+            <h2>Mark Your Attendance</h2>
+            <div class="form-group">
+                <label for="attendanceCourse">Course</label>
+                <select id="attendanceCourse">
+                    <option value="">Select Course</option>
+                    <option value="MAT201">MAT201 - Mathematics</option>
+                    <option value="SEN201">SEN201 - Software Engineering</option>
+                    <option value="ENT201">ENT201 - Entrepreneurship</option>
+                    <option value="CMP211">CMP211 - Computer Programming</option>
+                </select>
+            </div>
+            <button onclick="markAttendance()">Submit Attendance</button>
+            <div id="attendanceMessage" class="status-message" style="display: none;"></div>
+            <div class="nav-links">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+        
+        <!-- Lecturer Dashboard -->
+        <div id="lecturerDashboard" class="lecturer-section">
+            <h2>Lecturer Dashboard</h2>
+            <div class="form-group">
+                <label for="lecturerCourse">Select Course</label>
+                <select id="lecturerCourse" onchange="loadCourseAttendance()">
+                    <option value="">Select Course</option>
+                    <option value="MAT201">MAT201 - Mathematics</option>
+                    <option value="SEN201">SEN201 - Software Engineering</option>
+                    <option value="ENT201">ENT201 - Entrepreneurship</option>
+                    <option value="CMP211">CMP211 - Computer Programming</option>
+                </select>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat-card">
+                    <div>Total Students</div>
+                    <div class="stat-value" id="totalStudents">65</div>
+                </div>
+                <div class="stat-card">
+                    <div>Present</div>
+                    <div class="stat-value" id="presentStudents">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Absent</div>
+                    <div class="stat-value" id="absentStudents">65</div>
+                </div>
+            </div>
+            
+            <table id="attendanceTable">
+                <thead>
+                    <tr>
+                        <th>Matric Number</th>
+                        <th>Student Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            
+            <div class="nav-links">
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize student database (1001-1065)
+        const students = {};
+        for (let i = 1001; i <= 1065; i++) {
+            const matric = `TSU/FED/CS/23/${i}`;
+            students[matric] = {
+                name: `Student ${i - 1000}`,
+                password: matric // Using matric as password
+            };
+        }
+
+        // Initialize attendance records
+        let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || {};
+        const lecturerPassword = "123456"; // Default lecturer password
+
+        // Show specific section
+        function showSection(sectionId) {
+            document.querySelectorAll('.login-section, .attendance-section, .lecturer-section').forEach(section => {
+                section.classList.remove('active-section');
+            });
+            document.getElementById(sectionId).classList.add('active-section');
+        }
+
+        // Student login
+        function studentLogin() {
+            const matric = document.getElementById('studentMatric').value.trim();
+            
+            if (students[matric]) {
+                // Store current student in session
+                sessionStorage.setItem('currentStudent', matric);
+                showSection('studentAttendance');
+            } else {
+                alert('Invalid matric number. Please use format: TSU/FED/CS/23/1001 to TSU/FED/CS/23/1065');
+            }
+        }
+
+        // Lecturer login
+        function lecturerLogin() {
+            const password = document.getElementById('lecturerPassword').value;
+            
+            if (password === lecturerPassword) {
+                showSection('lecturerDashboard');
+                loadCourseAttendance();
+            } else {
+                alert('Invalid password. Please try again.');
+            }
+        }
+
+        // Mark attendance
+        function markAttendance() {
+            const matric = sessionStorage.getItem('currentStudent');
+            const course = document.getElementById('attendanceCourse').value;
+            const messageElement = document.getElementById('attendanceMessage');
+            
+            if (!course) {
+                messageElement.textContent = "Please select a course";
+                messageElement.className = "status-message error";
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            // Initialize course record if not exists
+            if (!attendanceRecords[course]) {
+                attendanceRecords[course] = {};
+            }
+            
+            // Mark attendance
+            attendanceRecords[course][matric] = {
+                name: students[matric].name,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+            
+            // Show success message
+            messageElement.textContent = `Attendance recorded for ${course}`;
+            messageElement.className = "status-message success";
+            messageElement.style.display = 'block';
+            
+            // Reset form after 2 seconds
+            setTimeout(() => {
+                document.getElementById('attendanceCourse').value = '';
+                messageElement.style.display = 'none';
+                showSection('studentLogin');
+                sessionStorage.removeItem('currentStudent');
+            }, 2000);
+        }
+
+        // Load attendance for lecturer view
+        function loadCourseAttendance() {
+            const course = document.getElementById('lecturerCourse').value;
+            const tableBody = document.querySelector('#attendanceTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (!course) return;
+            
+            let presentCount = 0;
+            const courseAttendance = attendanceRecords[course] || {};
+            
+            // Process all students (1001-1065)
+            for (let i = 1001; i <= 1065; i++) {
+                const matric = `TSU/FED/CS/23/${i}`;
+                const isPresent = courseAttendance[matric];
+                
+                if (isPresent) presentCount++;
+                
+                const row = tableBody.insertRow();
+                row.className = isPresent ? 'present' : 'absent';
+                row.insertCell(0).textContent = matric;
+                row.insertCell(1).textContent = students[matric].name;
+                row.insertCell(2).textContent = isPresent ? 'Present' : 'Absent';
+            }
+            
+            // Update stats
+            document.getElementById('presentStudents').textContent = presentCount;
+            document.getElementById('absentStudents').textContent = 65 - presentCount;
+        }
+
+        // Logout function
+        function logout() {
+            sessionStorage.clear();
+            showSection('studentLogin');
+        }
+
+        // Initialize default view
+        showSection('studentLogin');
+    </script>
+</body>
+</html>
